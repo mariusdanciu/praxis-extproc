@@ -133,3 +133,27 @@ sequenceDiagram
 #### Dynamic configuration of Praxis routing
 
 Using overlay JSON for the `intelligent_route` filter. This file is mounted from a ConfigMap that could be updated by KServe and MaaS controllers. But overlays may not be enough, as we also need to configure the `load_balancer` filter to point to the right cluster endpoints (each KServe deployment or ExternalModel may need to be declared as a separate Praxis cluster). So how exactly Praxis needs to be configured in order to solve routing for internal models, external models, and llm-d is something that we still need to address.
+
+#### Control plane flow
+
+```mermaid
+sequenceDiagram
+    participant user as User
+    participant isvc as InferenceService/LlmInferenceService CR
+    participant em as ExternalModel/ExternalProvider CRs
+    participant mc as maas-controller
+    participant ks as KServe
+    participant praxis as Praxis ext_proc
+    participant praxis-cfg as Praxis ConfigMap
+
+
+    ks-->>isvc: reconciles
+    mc-->>em: reconciles
+    praxis-->>praxis-cfg: mounts and reloads
+    user->>isvc: create
+    user->>em: create
+    ks->>praxis-cfg: create routing config for in cluster models
+    mc->>praxis-cfg: create routing config for external models
+
+```
+This flow shows how the current model CRS (LLMISVC, ISVC, ExternalModel/ExternalProvider) continues to be managed by the user as today however the internal machinery in KServe and MaaS controllers need to update the Praxis config in order to apply the correct routes.
