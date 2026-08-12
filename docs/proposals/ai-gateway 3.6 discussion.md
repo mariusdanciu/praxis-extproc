@@ -77,7 +77,7 @@ sequenceDiagram
     envoy->>BBR: model to header
     envoy->>wasm: auth & rate limiting
     wasm->>al: gRPC - anvoy auth and rate limiting protocols
-    al->>maas-api: REST - token validation 
+    al->>ma: REST - token validation 
     envoy->>praxis: inference - IPP filters
     alt Route
         praxis->>llm-d: endpoint picker
