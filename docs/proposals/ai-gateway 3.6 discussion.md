@@ -75,7 +75,7 @@ sequenceDiagram
     mc-->>praxis: Deploy praxis and update routing configuration based on external models state
     kserve-->>praxis: Update routing configuration based on HttpRoutes and EPP
     envoy->>BBR: model to header
-    envoy->>WASM-Shim: auth & rate limiting
+    envoy->>wasm: auth & rate limiting
     wasm->>al: gRPC - anvoy auth and rate limiting protocols
     al->>maas-api: REST - token validation 
     envoy->>praxis: inference - IPP filters
